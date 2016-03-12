@@ -19,7 +19,7 @@ hatenablog_username: hatappo
 # Build settings
 markdown: kramdown
 
-timezone: Japan/Tokyo
+timezone: Asia/Tokyo
 permalink: none
 
 # My settings
