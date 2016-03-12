@@ -14,6 +14,7 @@ baseurl: "/notedown" # the subpath of your site, e.g. /blog
 url: "http://hatappo.github.io/notedown/" # the base hostname & protocol for your site
 twitter_username: hatappo
 github_username:  hatappo
+hatenablog_username: hatappo
 
 # Build settings
 markdown: kramdown
@@ -21,6 +22,5 @@ markdown: kramdown
 #timezone: Japan/Tokyo
 permalink: none
 
-
 # My settings
-repository_url: https://github.com/hatappo/notedown
+project_name: notedown
