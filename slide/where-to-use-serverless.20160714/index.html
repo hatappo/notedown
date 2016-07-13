@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>APIGateway + Lambda でマイクロサービスしてみた</title>
+    <meta charset="utf-8">
+    <style>
+      @import url(https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
+      @import url(https://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic);
+      @import url(https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
+
+      body { font-family: 'Droid Serif'; }
+      h1, h2, h3 {
+        font-family: 'Yanone Kaffeesatz';
+        font-weight: normal;
+      }
+      .remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
+    </style>
+  </head>
+  <body>
+    <textarea id="source">
+
+class: right, middle
+
+# APIGateway + Lambda で
+# マイクロサービスしてみた
+
+###### [JAWS-UG アーキテクチャ専門支部 クラウドネイティブ分科会 CDP議論会 #10](http://jawsug-arch.connpass.com/event/34201/)
+###### 2016.07.14 Fumihiko Hata
+
+---
+
+# whoami
+
+```Clojure
+{:name     "畑史彦"
+ :company  "Stylerecipe, Inc"
+ :services [{:name        "スタレピ"
+             :description "プロのスタイリストにコーディネートを相談！"
+             :android     true
+             :ios         true}]
+ :langs    [:java :ruby :clojure]
+ :likes    [:scrum :aws]
+ :twitter  :hatappo
+ :github   :hatappo
+}
+```
+
+---
+
+# whoami
+
+```Clojure
+{:name     "畑史彦"
+ :company  "Stylerecipe, Inc"
+ :services [`{:name        "スタレピ"`
+             `:description "プロのスタイリストにコーディネートを相談！"`
+             `:android     true`
+             `:ios         true}`] ;↑もともと外注だった。
+ :langs    [:java :ruby :clojure]
+ :likes    [:scrum :aws]
+ :twitter  :hatappo
+ :github   :hatappo
+}
+```
+
+
+--
+
+内製に切り替えのタイミングで入社。
+
+* インフラ：EC2, RDS, S3, CloudSearch
+* サーバサイド：PHP
+* アプリ：Titanium
+
+---
+
+* サーバサイドのすべてのアプリケーションがモノリシックに結合した構成
+    1. アプリ用API
+    2. Web用HTML
+    3. スタイリストさん用CMSサーバ
+    4. 内部向け管理画面 × 2種
+
+--
+
+* このリポジトリ内にはバッチのコードも同梱。
+
+--
+
+* ある変更が予期せぬ別の場所に影響する。  
+そして、影響を考慮しないといけないつらみなど・・・  
+(※モノリスなことだけが原因ではない)
+
+
+---
+class: middle
+
+### 機能追加は、できるだけコードベースやアーキテクチャを分離したい。
+### （でも、サーバの管理コストが増えるの嫌...）
+
+---
+class: middle
+
+### APIGateway + Lambda がまさに全部解決してくれるらしい
+
+--
+
+### 試してみた。
+
+---
+
+# Case 1
+
+「某EC大手と連携するので、API叩いて関連商品をリコメンドしたい」
+
+--
+
+### やること
+
+* 日次でAPIを叩いて、DBのリコメンド商品一覧を更新
+
+するだけ。
+
+---
+background-image: url(img/recommend.jpg)
+
+# Case 1
+
+---
+
+# Case 1
+
+### バッチは、Lambdaで作れないだろうか。
+
+--
+
+スケジューラがあるみたいだし・・・
+
+--
+
+### 検証・・・
+
+---
+
+# Case 1
+
+### 結果
+
+採用せず。
+
+--
+
+### 分かったこと
+
+0. RDS（VPC内）へアクセスするには、設定に1工夫必要だった。
+0. 上記に関係するのか、RDSへのアクセスが遅いことがたまにある？。
+0. 実際に実行されるLambdaの各プロセスは独立しているので、都度コネクションがはられるっぽい。 →コネクションプーリングなどの概念はない。
+0. Lambdaの処理時間は5分でタイムアウト。  
+→ 長いバッチ処理に適用するなら、Lambdaをチェーンして起動させるなど工夫が必要。
+
+---
+
+---
+
+# Case 2
+
+「コーディネート・レシピのページをShareすると、画像が切れちゃっているんですが・・」
+
+--
+
+### 原因
+
+* ogp や twitter card の meta タグで指定してる画像が、規定の縦横比になっていない。  
+→ FacebookやTwitter側で上下が切り取られてしまう。。
+
+---
+background-image: url(img/share.jpg)
+
+# Case 2
+
+---
+
+# Case 2
+
+### 対策案
+
+1. 既存の画像数千枚を正しい縦横比に変換し
+2. レシピを登録する機能に画像変換を実装する
+
+--
+
+面倒くさい・・・
+
+---
+
+# Case 2
+
+### 対策案その２
+
+1. Share用の画像URLを APIGateway + Lambda へ向けて
+2. リクエストされた時に、on the fly で画像を変換してレスポンス
+3. Share用の画像は**SNS側でキャッシュされる**ので、こちらに要求されるスループットはゆるい。
+
+--
+
+とても、うまくいきました。
+
+---
+
+# Case 2
+
+```php
+$ogp_img_url = $recipe['image']
+```
+↓
+```php
+$ogp_img_url = $converter_url . '?url=' . rawurlencode($recipe['image'])
+```
+
+---
+
+# Case 2
+
+* LambdaのNode.jsは、**ImageMagick**がデフォで使えた。
+
+--
+
+* Nodeのバージョンが4.3.2なので、ES6は部分的なサポート。（Babel使おう）
+
+--
+
+* APIGatewayは、バイナリ（画像）をレスポンスできなかった。  
+→ 生成した画像をS3において`302`でS3のURLへ動的にリダイレクトさせた。
+
+--
+
+* APIGatewayが受け取ったデータをどうLambdaに流すかの設定が、ちょっと独特の記法。
+
+---
+
+# Case 2
+
+* 正常系として複数のステータスコードを使うことができなかった。
+    1. `200 OK`で生成した画像の情報をJsonで返す  
+    2. `302 Found`で生成した画像のURLにリダイレクト  
+→ `302`のほうは、**生成した画像のURLをエラーメッセージとして**APIGatewayに返して  
+`Location: integration.response.body.errorMessage` というマッピングで実現。（もっとまともな方法がありそう）
+
+---
+
+# Case 2
+
+* メモリを結構割り当てないと、処理に時間がかかり過ぎた（特に、デプロイ後の初回のリクエスト）  
+結局、**1024MB**、**Timeout15秒**の設定で稼働中。
+
+---
+
+---
+
+# Case 3
+
+「提携アパレルECサイトの商品クローリングを、アドホックに行える機能作って」
+
+--
+
+### 理由
+
+* 提携しているアパレルさんの商品データを、日次でクローリングしているが、このバッチが不安定。
+
+---
+
+# Case 3
+
+### 実装案
+
+1. クローリング・バッチのリプレースも見据えて、**スクレイピングのロジックはLambdaに分離**。
+2. APIGatewayをかぶせて、サーバ化
+3. 管理画面からは、APIを叩くだけ。
+
+--
+
+うまくいきました。
+
+---
+
+# Case 3
+
+* 今回は、NodeではなくClojureで実装してみた。
+
+--
+
+* デプロイ後の初回起動がいっそう遅い。。。JVMだから？
+
+--
+
+* APIGatewayをローカルでモックする良い手段が無かった。  
+（使ってないけど、NodeにはLibraryがある）
+
+---
+
+---
+
+# まとめと感想
+
+--
+* 👍 サーバが本当に手軽にホストできる。
+
+--
+* 👍 しかも料金が安い。特にアクセスが少ない場合。
+
+--
+* 👍 サーバ管理から解放される。
+
+--
+* 👍 キャパシティ・プランニングから解放される。
+
+--
+* 👻 ハマりどころは結構あると思う。  
+timeout設定、容量制限、インテグレーション、ローカル・テスト環境、etc...
+
+--
+* 👻 decentralized なサービス以外とは相性が悪いと思われる。コネクションの問題。  
+    * ✅: RDS, ElastiCache...
+    * ❎: DynamoDB, S3, CloudSearch?...
+
+---
+class: center, middle
+
+難しさもあるけど、APIGateway &amp; Lambda 大好きです！
+
+---
+class: center, middle
+
+Thanks for listening!
+
+---
+
+    </textarea>
+    <!-- <script src="https://gnab.github.io/remark/downloads/remark-latest.min.js"> -->
+    <script src="/notedown/slide/remark-latest.min.js">
+    </script>
+    <script>
+      var slideshow = remark.create({
+        ratio: '4:3', // '16:9'
+        highlightStyle: 'github',
+        highlightLines: true,
+        highlightSpans: true,
+        slideNumberFormat: function (current, total) {
+          // var currentBar = Array.from(Array(current).keys()).map(n => '<a href="#' + (n+1) + '" title="#' + (n+1) + '">■</a>').join('');
+          // var remainingBar = Array.from(Array(total - current).keys()).map(n => '<a href="#' + (n+1+current) + '" title="#' + (n+1+current) + '">□</a>').join('');
+          var currentBar = Array.from(Array(current).keys()).map(_ => '■').join('');
+          var remainingBar = Array.from(Array(total - current).keys()).map(_ => '□').join('');
+          // return currentBar + remainingBar + '<br/>' + current + ' / ' + total;
+          return current + ' / ' + total;
+        },
+      });
+    </script>
+  </body>
+</html>
