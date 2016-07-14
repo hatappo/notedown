@@ -145,7 +145,7 @@ background-image: url(img/recommend.jpg)
 
 ### 結果
 
-採用せず。
+見送り。
 
 --
 
@@ -155,7 +155,7 @@ background-image: url(img/recommend.jpg)
 0. 上記に関係するのか、RDSへのアクセスが遅いことがたまにある？。
 0. 実際に実行されるLambdaの各プロセスは独立しているので、都度コネクションがはられるっぽい。 →コネクションプーリングなどの概念はない。
 0. Lambdaの処理時間は5分でタイムアウト。  
-→ 長いバッチ処理に適用するなら、Lambdaをチェーンして起動させるなど工夫が必要。
+→ 長いバッチ処理に適用するなら、工夫が必要。
 
 ---
 
@@ -184,7 +184,7 @@ background-image: url(img/share.jpg)
 ### 対策案
 
 1. 既存の画像数千枚を正しい縦横比に変換し
-2. レシピを登録する機能に画像変換を実装する
+2. レシピを登録する機能（それ以外の画像UL処理のところにも）に画像変換を挿しこんでいく実装・・・
 
 --
 
@@ -205,8 +205,13 @@ background-image: url(img/share.jpg)
 とても、うまくいきました。
 
 ---
+background-image: url(img/img-converter.jpg)
+
+---
 
 # Case 2
+
+サーバ側のコード修正はこれだけ。
 
 ```php
 $ogp_img_url = $recipe['image']
@@ -254,8 +259,6 @@ $ogp_img_url = $converter_url . '?url=' . rawurlencode($recipe['image'])
 
 ---
 
----
-
 # Case 3
 
 「提携アパレルECサイトの商品クローリングを、アドホックに行える機能作って」
@@ -281,6 +284,9 @@ $ogp_img_url = $converter_url . '?url=' . rawurlencode($recipe['image'])
 うまくいきました。
 
 ---
+background-image: url(img/scraping.jpg)
+
+---
 
 # Case 3
 
@@ -294,8 +300,6 @@ $ogp_img_url = $converter_url . '?url=' . rawurlencode($recipe['image'])
 
 * APIGatewayをローカルでモックする良い手段が無かった。  
 （使ってないけど、NodeにはLibraryがある）
-
----
 
 ---
 
