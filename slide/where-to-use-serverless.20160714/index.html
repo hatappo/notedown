@@ -40,8 +40,6 @@ class: right, middle
              :ios         true}]
  :langs    [:java :ruby :clojure]
  :likes    [:scrum :aws]
- :twitter  :hatappo
- :github   :hatappo
 }
 ```
 
@@ -58,15 +56,13 @@ class: right, middle
              `:ios         true}`] ;↑もともと外注だった。
  :langs    [:java :ruby :clojure]
  :likes    [:scrum :aws]
- :twitter  :hatappo
- :github   :hatappo
 }
 ```
 
 
 --
 
-内製に切り替えのタイミングで入社。
+自分は内製化のタイミングで入社。
 
 * インフラ：EC2, RDS, S3, CloudSearch
 * サーバサイド：PHP
@@ -87,7 +83,6 @@ class: right, middle
 --
 
 * ある変更が予期せぬ別の場所に影響する。  
-そして、影響を考慮しないといけないつらみなど・・・  
 (※モノリスなことだけが原因ではない)
 
 
@@ -100,7 +95,7 @@ class: middle
 ---
 class: middle
 
-### APIGateway + Lambda がまさに全部解決してくれるらしい
+### サーバレス（APIGateway & Lambda）がまさに全部解決してくれるらしいという噂
 
 --
 
@@ -110,7 +105,7 @@ class: middle
 
 # Case 1
 
-「某EC大手と連携するので、API叩いて関連商品をリコメンドしたい」
+「某EC（A社）のデータ使えるようになるから、API叩いて商品をリコメンドしたい」
 
 --
 
@@ -267,7 +262,7 @@ $ogp_img_url = $converter_url . '?url=' . rawurlencode($recipe['image'])
 
 ### 理由
 
-* 提携しているアパレルさんの商品データを、日次でクローリングしているが、このバッチが不安定。
+* 提携しているアパレルさんの商品データを、日次でクローリングしているが、このバッチが不安定。。
 
 ---
 
@@ -276,8 +271,8 @@ $ogp_img_url = $converter_url . '?url=' . rawurlencode($recipe['image'])
 ### 実装案
 
 1. クローリング・バッチのリプレースも見据えて、**スクレイピングのロジックはLambdaに分離**。
-2. APIGatewayをかぶせて、サーバ化
-3. 管理画面からは、APIを叩くだけ。
+2. APIGatewayをかぶせて、API化
+3. 管理画面は、このAPIを叩くだけ。
 
 --
 
@@ -309,7 +304,7 @@ background-image: url(img/scraping.jpg)
 * 👍 サーバが本当に手軽にホストできる。
 
 --
-* 👍 しかも料金が安い。特にアクセスが少ない場合。
+* 👍 安い。特にアクセスが少ない場合。
 
 --
 * 👍 サーバ管理から解放される。
@@ -318,18 +313,18 @@ background-image: url(img/scraping.jpg)
 * 👍 キャパシティ・プランニングから解放される。
 
 --
-* 👻 ハマりどころは結構あると思う。  
-timeout設定、容量制限、インテグレーション、ローカル・テスト環境、etc...
+* 👻 ハマりどころは結構ある。  
+各種制限、timeout設定、最初のリクエストだけ遅い件、インテグレーション、ローカル・テスト環境、etc...
 
 --
-* 👻 decentralized なサービス以外とは相性が悪いと思われる。コネクションの問題。  
+* 👻 decentralized なサービス以外とは相性悪いっぽい。コネクションの問題。  
     * ✅: RDS, ElastiCache...
     * ❎: DynamoDB, S3, CloudSearch?...
 
 ---
 class: center, middle
 
-難しさもあるけど、APIGateway &amp; Lambda 大好きです！
+はまりどころもあるけどサーバレス構成便利！
 
 ---
 class: center, middle
