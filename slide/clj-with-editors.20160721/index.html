@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>clj with editors</title>
+    <meta charset="utf-8">
+    <style>
+      @import url(https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
+      @import url(https://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic);
+      @import url(https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
+
+      body { font-family: 'Droid Serif'; }
+      h1, h2, h3 {
+        font-family: 'Yanone Kaffeesatz';
+        font-weight: normal;
+      }
+      .remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
+
+      table, th, td {
+        border-collapse: collapse;
+        border:1px solid lightgrey;
+      }
+    </style>
+  </head>
+  <body>
+    <textarea id="source">
+
+class: right, middle
+
+# Which Clojure Editor I Should Use
+
+###### [nishi-shinju-clojure #0](https://clojure-love.doorkeeper.jp/events/49296)
+###### 2016.07.21 Fumihiko Hata
+###### [remark.js](https://github.com/gnab/remark)
+
+---
+
+# whoami
+
+```Clojure
+{:name     "畑史彦"
+ :company  "Stylerecipe, Inc"
+ :services [{:name        "sutarepi"
+             :description "プロのスタイリストにコーディネートを相談できるアプリ"
+             :android     true
+             :ios         true}]
+ :likes    [:scrum :sql]
+}
+```
+
+---
+
+# Service
+
+```Clojure
+{:name     "畑史彦"
+ :company  "Stylerecipe, Inc"
+ :services [`{:name        "sutarepi"`
+             `:description "プロのスタイリストにコーディネートを相談できるアプリ"`
+             `:android     true`
+             `:ios         true}`]
+ :likes    [:scrum :sql]
+}
+```
+
+|   | original | current |
+|:--|:--|:--|
+| Infrastracture | AWS & Asure |-> AWS |
+| Server Apps    | PHP      | + Node, Clojure, Ruby |
+| Client Apps    | Titanium | -> Ionic |
+
+---
+background-image: url(img/sutarepi.jpg)
+
+# Service
+
+---
+
+---
+
+みなさん、
+
+--
+Clojureを書くとき、エディタは何を使っていますか？
+
+--
+
+* Emacs ?
+
+--
+
+* vim ?
+
+--
+
+* IntellijIDEA + Cursive ?
+
+--
+
+* Light Table ?
+
+---
+background-image: url(img/clojure_2015_survey_results.jpg)
+
+[State of Clojure 2015 Survey Results — Cognitect Blog](http://blog.cognitect.com/blog/2016/1/28/state-of-clojure-2015-survey-results)
+
+---
+
+# Clojureエディタ変遷
+
+---
+
+## 1. Eclipse + Counterclockwise
+
+* Clojureを勉強し始めた(2014くらい?)。  
+それまで仕事で使っていた Eclipse & Java の環境を使用。  
+名前がかっこいい。
+
+---
+
+## 2. Light Table
+
+* ほどなくして乗り換えた。当時盛り上がってた。
+
+---
+
+## 3. Emacs + clojure-mode + CIDER
+
+* Clojure書く人はEmacs使いが多いと知って。
+
+---
+class: middle
+
+この頃(2015?)、地道な社内ロビー活動のかいあって、自チームでClojureが使えそうな雰囲気に。
+
+※ ロビー活動
+
+* 社内プログラミングコンテストのお題に、Clojureのコードを忍ばせる。
+* 「Yコンビネータのポール・グレアムは、かつてClojure（ではくてCommonLisp）で起業してY!に完勝（というかバイアウト）した」など、すごさを吹聴。
+* 『Living Clojure』を2/3くらい和訳。
+* などなど
+
+---
+class: middle
+
+しかし・・・
+
+---
+class: middle
+
+* 同僚:「本格的にClojure書くとしたら開発環境は何？」
+
+* はた:「Emacs使ってる人が多いよ。私の開発環境についてまとめ・・・」
+
+* 同僚:「えっ、Emacs？」
+
+* はた:「えっ？」
+
+---
+class: middle
+
+Emacsを全く使っていない人に、Emacsをすすめるのはハードルが高い。。  
+そもそも言語自体の学習コストもあるのに。
+
+--
+
+・・・なので
+
+---
+
+## 4. IntelliJ IDEA + Cursive
+
+* Javaユーザには身近。
+* Cursive入れるだけで潤沢なサポートが手に入る手軽さ。
+
+--
+* ただ、マクロ周りでエラー。  
+--
+
+（[Issue](https://github.com/cursive-ide/cursive/issues/147)を見ると、それも[解決](https://cursive-ide.com/userguide/macros.html)してきてるらしい）
+
+![](img/cursive_macro.jpg)
+
+
+---
+class: middle
+
+### 使ってくれた。IntelliJ、Cursive ありがとう
+
+---
+class: middle
+
+その後、転職した。
+
+---
+class: middle
+
+現職にて
+
+* はた:「Clojure良いですよ、弊社で使いましょう」
+
+* 上司:「いいね、開発環(ry」
+
+* はた:「Emac(ry」
+
+* 上司:「えっ、Ema(ry」
+
+* はた:「 **IntelliJ + Cursive っていう選択肢も😋** 」
+
+* 上司:「・・・有料になるっぽいよ」
+
+* はた:「😨」
+
+---
+
+## 4. Sublimetext3
+
+* 割とみんな入れてる。
+* デザイナやフロントエンドの人も抵抗ない。
+
+--
+
+しかし、Clojure用の[プラグイン](https://packagecontrol.io/search/clojure)が少ない。そもそも最近メンテもされていない。
+
+---
+class: middle
+
+作り直した。[hatappo/sublime-clojure](https://github.com/hatappo/sublime-clojure)
+
+---
+
+補完全般
+
+![](img/sublime-clojure-ns.gif)
+
+---
+
+インラインのネームスペースやパッケージのリファクタリング
+
+![](img/sublime-clojure-require.gif)
+
+---
+
+`doc`や`source`、`macroexpand-1`などをしてsublime-replに流す
+
+![](img/sublime-clojure-repl.gif)
+
+---
+
+ちなみに、スライド作ちながら、ふと気になって**ATOM**を触ってみた。
+
+--
+![](img/atom-user.jpg)
+
+---
+
+ATOM proto-repl  
+https://atom.io/packages/proto-repl
+
+![](img/proto-repl.gif)
+
+---
+
+ATOM proto-repl-charts  
+https://atom.io/packages/proto-repl-charts
+
+![](img/proto-repl-charts.png)
+
+---
+class: middle
+
+ATOMのClojure環境はかなり充実してた
+
+---
+
+---
+
+# まとめ
+
+--
+
+* 非Emacs使い/非VimmerのClojureファースト・ステップには、Sublimetext（やAtom）をすすめると手軽かも👻
+
+---
+class: center, middle
+
+Thanks for listening.
+
+---
+
+    </textarea>
+    <!-- <script src="https://gnab.github.io/remark/downloads/remark-latest.min.js"> -->
+    <script src="/notedown/slide/remark-latest.min.js">
+    </script>
+    <script>
+      var slideshow = remark.create({
+        ratio: '16:9', // '4:3',
+        highlightStyle: 'ascetic',
+        highlightLines: true,
+        highlightSpans: true,
+        slideNumberFormat: function (current, total) {
+          var currentBar = Array.from(Array(current).keys()).map(n => '<a href="#' + (n+1) + '" title="#' + (n+1) + '">■</a>').join('');
+          var remainingBar = Array.from(Array(total - current).keys()).map(n => '<a href="#' + (n+1+current) + '" title="#' + (n+1+current) + '">□</a>').join('');
+          return currentBar + remainingBar + ' ' + current + ' / ' + total;
+        },
+      });
+    </script>
+  </body>
+</html>
