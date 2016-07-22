@@ -105,7 +105,7 @@ background-image: url(img/clojure_2015_survey_results.jpg)
 
 ---
 
-# Clojureエディタ変遷
+# 私のClojureエディタ変遷
 
 ---
 
@@ -130,14 +130,14 @@ background-image: url(img/clojure_2015_survey_results.jpg)
 ---
 class: middle
 
-この頃(2015?)、地道な社内ロビー活動のかいあって、自チームでClojureが使えそうな雰囲気に。
+この頃(2015?)、地道な社内ロビー活動のかいあってか、自チームでClojureが使えそうな雰囲気に。
 
 ※ ロビー活動
 
 * 社内プログラミングコンテストのお題に、Clojureのコードを忍ばせる。
-* 「Yコンビネータのポール・グレアムは、かつてClojure（ではくてCommonLisp）で起業してY!に完勝（というかバイアウト）した」など、すごさを吹聴。
-* 『Living Clojure』を2/3くらい和訳。
-* などなど
+* ポール・グレアム（←非エンジニアでも知ってる人が多い）は、Clojure（ではくてCommonLisp）使いであることをアピール。
+* 『Living Clojure』を周りに薦める。半分くらい和訳した。
+* など
 
 ---
 class: middle
@@ -158,10 +158,10 @@ class: middle
 ---
 class: middle
 
-Emacsを全く使っていない人に、Emacsをすすめるのはハードルが高い。。  
-そもそも言語自体の学習コストもあるのに。
+EmacsマイノリティなチームでEmacsを導入するコストが高い。
+そもそもこのときは言語自体の学習コストもある。
 
---
+---
 
 ・・・なので
 
@@ -173,10 +173,10 @@ Emacsを全く使っていない人に、Emacsをすすめるのはハードル�
 * Cursive入れるだけで潤沢なサポートが手に入る手軽さ。
 
 --
-* ただ、マクロ周りでエラー。  
+* ただ、標準ライブラリではないマクロがエラーになったり。  
 --
 
-（[Issue](https://github.com/cursive-ide/cursive/issues/147)を見ると、それも[解決](https://cursive-ide.com/userguide/macros.html)してきてるらしい）
+（[Issue](https://github.com/cursive-ide/cursive/issues/147)を見ると、それも[解決](https://cursive-ide.com/userguide/macros.html)してきてるらしいし、`core.spec`が今後追い風になってくれるかも）
 
 ![](img/cursive_macro.jpg)
 
@@ -184,7 +184,9 @@ Emacsを全く使っていない人に、Emacsをすすめるのはハードル�
 ---
 class: middle
 
-### 使ってくれた。IntelliJ、Cursive ありがとう
+### IntelliJ + Cursive 構成は問題なく導入できた。
+
+（しかし、このプロジェクトは結局最終的にScalaが採用された・・・）
 
 ---
 class: middle
@@ -200,15 +202,11 @@ class: middle
 
 * 上司:「いいね、開発環(ry」
 
-* はた:「Emac(ry」
+* はた:「Emacsや**IntelliJ**などいいですよ😋」
 
-* 上司:「えっ、Ema(ry」
+* 上司:「・・・Cursiveってプラグインは有料になるみたいよ」
 
-* はた:「 **IntelliJ + Cursive っていう選択肢も😋** 」
-
-* 上司:「・・・有料になるっぽいよ」
-
-* はた:「😨」
+* はた:「えっ」
 
 ---
 
@@ -219,12 +217,12 @@ class: middle
 
 --
 
-しかし、Clojure用の[プラグイン](https://packagecontrol.io/search/clojure)が少ない。そもそも最近メンテもされていない。
+しかし、Clojure用の[プラグイン](https://packagecontrol.io/search/clojure)が少ない。そもそも最近メンテされていない。
 
 ---
 class: middle
 
-作り直した。[hatappo/sublime-clojure](https://github.com/hatappo/sublime-clojure)
+### 作り直した。[hatappo/sublime-clojure](https://github.com/hatappo/sublime-clojure)
 
 ---
 
@@ -266,7 +264,7 @@ class: middle
 
 ---
 
-エディタのサポートが弱い分、**lein**プラグインを直接叩いている。
+エディタのサポートが弱い分、リファクタや解析系の**lein**プラグインを積極活用する。
 
 ```clojure
 ; ~/.lein/profiles.clj
@@ -274,17 +272,17 @@ class: middle
 {:user {:aliases {
           "slamhound" ["run" "-m" "slam.hound"]}
         :plugins [
-*          [jonase/eastwood "0.2.3"]         ; [code] code linter
-*          [lein-kibit "0.1.2"]              ; [code] static code analyzer
-*          [venantius/yagni "0.1.4"]         ; [code] static code analyszer to find unused
-*          [lein-bikeshed "0.3.0"]           ; [code] code style checker
-*          [lein-cljfmt "0.5.3"]             ; [code] code formatter
-*          [lein-ancient "0.6.10"]           ; [deps] check outdated deps
-*          [lein-git-deps "0.0.2"]           ; [deps] enable to add git repo to deps
-*          [venantius/ultra "0.4.1"]         ; [dev] colorized and more visible outputs of repl, test, stacktrace
-*          [lein-try "0.4.3"]                ; [dev] try package easily
-*          [lein-nevam "0.1.2"]              ; [tool] converter from pom.xml to project.clj
-*          [hiccup-bridge "1.0.1"]]          ; [tool] converter between html & hicupp
+          [jonase/eastwood "0.2.3"]         ; [code] code linter
+          [lein-kibit "0.1.2"]              ; [code] static code analyzer
+          [venantius/yagni "0.1.4"]         ; [code] static code analyszer to find unused
+          [lein-bikeshed "0.3.0"]           ; [code] code style checker
+          [lein-cljfmt "0.5.3"]             ; [code] code formatter
+          [lein-ancient "0.6.10"]           ; [deps] check outdated deps
+          [lein-git-deps "0.0.2"]           ; [deps] enable to add git repo to deps
+          [venantius/ultra "0.4.1"]         ; [dev] colorized and more visible outputs of repl, test, stacktrace
+          [lein-try "0.4.3"]                ; [dev] try package easily
+          [lein-nevam "0.1.2"]              ; [tool] converter from pom.xml to project.clj
+          [hiccup-bridge "1.0.1"]]          ; [tool] converter between html & hicupp
         :dependencies [
           [slamhound "1.5.5"]               ; [code] refactor tool
           ; [pjstadig/humane-test-output "0.8.0"]   ; venantius/ultra has upward feature
@@ -292,14 +290,16 @@ class: middle
 ```
 
 ---
+class: middle
 
-これからClojureを始める人にエディタをすすめる際は Sublimetext も選択肢としてどうぞ💁！
+という感じで、Clojure開発環境をSublimetextで構築するのはいかがでしょうか💁
 
 ---
+class: middle
 
 ところで、スライド作っていて **ATOM** がふと気になった。
 
---
+---
 ![](img/atom-user.jpg)
 
 ---
@@ -319,9 +319,7 @@ https://atom.io/packages/proto-repl-charts
 ---
 class: middle
 
-ATOMのClojure環境はかなり充実してた・・・
-
----
+ATOMのClojure環境は結構充実してた・・・
 
 ---
 
@@ -329,14 +327,12 @@ ATOMのClojure環境はかなり充実してた・・・
 
 --
 
-* Clojureファースト・ステップに Sublimetext（やAtom）いいよ👻
+* Clojureファースト・ステップに Sublimetext（やAtom）もありですよ！👻
 
 ---
 class: center, middle
 
 Thanks for listening.
-
----
 
     </textarea>
     <!-- <script src="https://gnab.github.io/remark/downloads/remark-latest.min.js"> -->
@@ -345,13 +341,14 @@ Thanks for listening.
     <script>
       var slideshow = remark.create({
         ratio: '16:9', // '4:3',
-        highlightStyle: 'solarized-light',
+        highlightStyle: 'github',
         highlightLines: true,
         highlightSpans: true,
         slideNumberFormat: function (current, total) {
-          var currentBar = Array.from(Array(current).keys()).map(n => '<a href="#' + (n+1) + '" title="#' + (n+1) + '">■</a>').join('');
-          var remainingBar = Array.from(Array(total - current).keys()).map(n => '<a href="#' + (n+1+current) + '" title="#' + (n+1+current) + '">□</a>').join('');
-          return currentBar + remainingBar + ' ' + current + ' / ' + total;
+          // var currentBar = Array.from(Array(current).keys()).map(n => '<a href="#' + (n+1) + '" title="#' + (n+1) + '">■</a>').join('');
+          // var remainingBar = Array.from(Array(total - current).keys()).map(n => '<a href="#' + (n+1+current) + '" title="#' + (n+1+current) + '">□</a>').join('');
+          // return currentBar + remainingBar + ' ' + current + ' / ' + total;
+          return current + ' / ' + total;
         },
       });
     </script>
